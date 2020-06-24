@@ -11,11 +11,10 @@ const ButtonWrapper = styled.div`
 const Controls = ({
   grid,
   setGrid,
-  setIntervalId,
   intervalId,
   innerGrid,
   gameLogic,
-  speed,
+  setGeneration,
 }: {
   grid: any[][];
   setGrid: React.Dispatch<React.SetStateAction<any[][]>>;
@@ -26,7 +25,7 @@ const Controls = ({
     cols: number;
   };
   gameLogic: () => void;
-  speed: number;
+  setGeneration: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const seed = () => {
     const gridCopy = grid.map((array) => array.slice());
@@ -43,12 +42,11 @@ const Controls = ({
   };
 
   const start = () => {
-    const id = setInterval(gameLogic, speed);
-    setIntervalId(id);
+    gameLogic();
   };
 
   const stop = () => {
-    global.clearInterval(intervalId);
+    global.clearTimeout(intervalId);
   };
 
   const emptyGrid = () => {
@@ -57,6 +55,7 @@ const Controls = ({
       .map(() => Array(innerGrid.cols).fill(false));
 
     setGrid(empty);
+    setGeneration(0);
   };
   return (
     <ButtonWrapper>

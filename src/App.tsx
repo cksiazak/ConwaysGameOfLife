@@ -13,7 +13,7 @@ const AppStyle = styled.div`
 
 const App = () => {
   const [generation, setGeneration] = useState(0);
-  const [speed] = useState(250);
+  const [speed] = useState(500);
   const [innerGrid] = useState({
     rows: 25,
     cols: 25,
@@ -31,76 +31,57 @@ const App = () => {
     setGrid(gridCopy);
   };
 
+  const getNeighbors = (x: number, y: number) => {
+    let count = 0;
+
+    // top neighbor
+    if (x > 0) if (grid[x - 1][y]) count++;
+    // top-left neighbor
+    if (x > 0 && y > 0) if (grid[x - 1][y - 1]) count++;
+    // top right neighbor
+    if (x > 0 && y < innerGrid.cols - 1) if (grid[x - 1][y + 1]) count++;
+    // right neighbor
+    if (y < innerGrid.cols - 1) if (grid[x][y + 1]) count++;
+    // left neighbor
+    if (y > 0) if (grid[x][y - 1]) count++;
+    // bottom neighbor
+    if (x < innerGrid.rows - 1) if (grid[x + 1][y]) count++;
+    // bottom left neighbor
+    if (x < innerGrid.rows - 1 && y > 0) if (grid[x + 1][y - 1]) count++;
+    // bottom right neighbor
+    if (x < innerGrid.rows - 1 && y < innerGrid.cols - 1)
+      if (grid[x + 1][y + 1]) count++;
+
+    return count;
+  };
+
   const gameLogic = () => {
-    const currentGrid = grid;
-    const gridClone = grid.map((array) => array.slice());
+    const newGrid = [...grid];
 
-    currentGrid.forEach((row, rowI) => {
-      row.forEach((_, colI) => {
-        // increase count per each neighbor
-        let count = 0;
+    for (let i = 0; i < innerGrid.rows; i++) {
+      for (let j = 0; j < innerGrid.cols; j++) {
+        let neighbors = getNeighbors(i, j);
+        console.log(neighbors);
 
-        // top neighbor
-        if (rowI > 0) {
-          if (grid[rowI - 1][colI]) {
-            count++;
-          }
+        if (grid[i][j] && (neighbors < 2 || neighbors > 3)) {
+          newGrid[i][j] = false;
         }
-        if (rowI > 0 && colI > 0) {
-          // top-left neighbor
-          if (grid[rowI - 1][colI - 1]) {
-            count++;
-          }
+        if (grid[i][j] && neighbors === 2) {
+          newGrid[i][j] = true;
         }
-        if (rowI > 0 && colI < innerGrid.cols - 1) {
-          // top right neighbor
-          if (grid[rowI - 1][colI + 1]) {
-            count++;
-          }
+        if (!grid[i][j] && neighbors === 3) {
+          newGrid[i][j] = true;
         }
-        if (colI < innerGrid.cols - 1) {
-          // right neighbor
-          if (grid[rowI][colI + 1]) {
-            count++;
-          }
-        }
-        // left neighbor
-        if (colI > 0) {
-          if (grid[rowI][colI - 1]) {
-            count++;
-          }
-        }
-        // bottom neighbor
-        if (rowI < innerGrid.rows - 1) {
-          if (grid[rowI + 1][colI]) {
-            count++;
-          }
-        }
-        // bottom left neighbor
-        if (rowI < innerGrid.rows - 1 && colI > 0) {
-          if (grid[rowI + 1][colI - 1]) {
-            count++;
-          }
-        }
-        // bottom right neighbor
-        if (rowI < innerGrid.rows - 1 && colI < innerGrid.cols - 1) {
-          if (grid[rowI + 1][colI + 1]) {
-            count++;
-          }
-        }
+      }
+    }
 
-        // check grid and count to verify rules on life/death
-        if (grid[rowI][colI] && (count < 2 || count > 3)) {
-          gridClone[rowI][colI] = false;
-        }
-        if (!grid[rowI][colI] && count === 3) {
-          gridClone[rowI][colI] = true;
-        }
-      });
-    });
-
-    setGrid(gridClone);
+    setGrid(newGrid);
     setGeneration((prevState) => prevState + 1);
+
+    const id = setTimeout(() => {
+      gameLogic();
+    }, speed);
+    setIntervalId(id);
   };
 
   return (
@@ -115,7 +96,7 @@ const App = () => {
         intervalId={intervalId}
         innerGrid={innerGrid}
         gameLogic={gameLogic}
-        speed={speed}
+        setGeneration={setGeneration}
       />
     </AppStyle>
   );
