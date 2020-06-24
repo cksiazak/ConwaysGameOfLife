@@ -1,26 +1,116 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+// components
+import Grid from './components/features/Grid';
+import Controls from './components/features/Controls';
+
+const App = () => {
+  const [generation, setGeneration] = useState(0);
+  const [speed] = useState(250);
+  const [innerGrid] = useState({
+    rows: 25,
+    cols: 25,
+  });
+  const [grid, setGrid] = useState(() =>
+    Array(innerGrid.rows)
+      .fill(null)
+      .map(() => Array(innerGrid.cols).fill(false))
+  );
+  const [intervalId, setIntervalId] = useState<number>();
+
+  const toggleBox = (row: number, col: number) => {
+    const gridCopy = grid.map((array) => array.slice());
+    gridCopy[row][col] = !gridCopy[row][col];
+    setGrid(gridCopy);
+  };
+
+  const gameLogic = () => {
+    const currentGrid = grid;
+    const gridClone = grid.map((array) => array.slice());
+
+    currentGrid.forEach((row, rowI) => {
+      row.forEach((_, colI) => {
+        // increase count per each neighbor
+        let count = 0;
+
+        // top neighbor
+        if (rowI > 0) {
+          if (grid[rowI - 1][colI]) {
+            count++;
+          }
+        }
+        if (rowI > 0 && colI > 0) {
+          // top-left neighbor
+          if (grid[rowI - 1][colI - 1]) {
+            count++;
+          }
+        }
+        if (rowI > 0 && colI < innerGrid.cols - 1) {
+          // top right neighbor
+          if (grid[rowI - 1][colI + 1]) {
+            count++;
+          }
+        }
+        if (colI < innerGrid.cols - 1) {
+          // right neighbor
+          if (grid[rowI][colI + 1]) {
+            count++;
+          }
+        }
+        // left neighbor
+        if (colI > 0) {
+          if (grid[rowI][colI - 1]) {
+            count++;
+          }
+        }
+        // bottom neighbor
+        if (rowI < innerGrid.rows - 1) {
+          if (grid[rowI + 1][colI]) {
+            count++;
+          }
+        }
+        // bottom left neighbor
+        if (rowI < innerGrid.rows - 1 && colI > 0) {
+          if (grid[rowI + 1][colI - 1]) {
+            count++;
+          }
+        }
+        // bottom right neighbor
+        if (rowI < innerGrid.rows - 1 && colI < innerGrid.cols - 1) {
+          if (grid[rowI + 1][colI + 1]) {
+            count++;
+          }
+        }
+
+        // check grid and count to verify rules on life/death
+        if (grid[rowI][colI] && (count < 2 || count > 3)) {
+          gridClone[rowI][colI] = false;
+        }
+        if (!grid[rowI][colI] && count === 3) {
+          gridClone[rowI][colI] = true;
+        }
+      });
+    });
+
+    setGrid(gridClone);
+    setGeneration((prevState) => prevState + 1);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Grid grid={grid} toggleBox={toggleBox} />
+      <h3>Generation: {generation}</h3>
+      <Controls
+        grid={grid}
+        setGrid={setGrid}
+        setIntervalId={setIntervalId}
+        intervalId={intervalId}
+        innerGrid={innerGrid}
+        gameLogic={gameLogic}
+        speed={speed}
+      />
     </div>
   );
-}
+};
 
 export default App;
