@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 
 // components
 import Grid from './components/features/Grid';
 import Controls from './components/features/Controls';
+
+const AppStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const App = () => {
   const [generation, setGeneration] = useState(0);
@@ -97,7 +104,8 @@ const App = () => {
   };
 
   return (
-    <div className='App'>
+    <AppStyle className='App'>
+      <h1>Conway's Game of Life</h1>
       <Grid grid={grid} toggleBox={toggleBox} />
       <h3>Generation: {generation}</h3>
       <Controls
@@ -109,7 +117,7 @@ const App = () => {
         gameLogic={gameLogic}
         speed={speed}
       />
-    </div>
+    </AppStyle>
   );
 };
 

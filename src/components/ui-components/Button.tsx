@@ -1,4 +1,9 @@
 import React, { ReactNode } from 'react';
+import styled from 'styled-components';
+
+const ButtonStyle = styled.button`
+  cursor: pointer;
+`;
 
 const Button = ({
   clickHandler,
@@ -8,9 +13,9 @@ const Button = ({
   children: ReactNode;
 }) => {
   return (
-    <button type='button' onClick={clickHandler}>
+    <ButtonStyle type='button' onClick={clickHandler}>
       {children}
-    </button>
+    </ButtonStyle>
   );
 };
 

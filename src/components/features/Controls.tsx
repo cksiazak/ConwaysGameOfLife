@@ -1,7 +1,12 @@
 import React from 'react';
+import styled from 'styled-components';
 
 // components
 import Button from '../ui-components/Button';
+
+const ButtonWrapper = styled.div`
+  display: flex;
+`;
 
 const Controls = ({
   grid,
@@ -54,12 +59,12 @@ const Controls = ({
     setGrid(empty);
   };
   return (
-    <>
+    <ButtonWrapper>
       <Button clickHandler={seed}>Random</Button>
       <Button clickHandler={start}>Start</Button>
       <Button clickHandler={stop}>Stop</Button>
       <Button clickHandler={emptyGrid}>Clear Grid</Button>
-    </>
+    </ButtonWrapper>
   );
 };
 
