@@ -11,9 +11,11 @@ const Row = styled.div`
 const Grid = ({
   grid,
   toggleBox,
+  clickable,
 }: {
   grid: any[][];
   toggleBox: (row: number, col: number) => void;
+  clickable: boolean;
 }) => {
   return (
     <div>
@@ -26,6 +28,7 @@ const Grid = ({
               toggleBox={toggleBox}
               row={rowKey}
               col={colKey}
+              clickable={clickable}
             />
           ))}
         </Row>

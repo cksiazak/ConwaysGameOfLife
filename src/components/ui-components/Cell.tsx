@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const CellStyle = styled.div<{ active?: boolean }>`
+const CellStyle = styled.div<{ active: boolean; clickable: boolean }>`
   display: inline-block;
   border: 1px solid black;
   width: 10px;
@@ -9,10 +9,10 @@ const CellStyle = styled.div<{ active?: boolean }>`
   margin-left: -1px;
   margin-bottom: -1px;
   background: ${({ active }) => (active ? 'black' : 'white')};
-  cursor: pointer;
 
   &:hover {
-    background: red;
+    background: ${({ clickable }) => (clickable ? 'red' : '')};
+    cursor: ${({ clickable }) => (clickable ? 'pointer' : 'cursor')};
   }
 `;
 
@@ -21,17 +21,21 @@ const Cell = ({
   toggleBox,
   row,
   col,
+  clickable,
 }: {
   active: boolean;
   toggleBox: (row: number, col: number) => void;
   row: number;
   col: number;
+  clickable: boolean;
 }) => {
   const clickHandler = () => {
     toggleBox(row, col);
   };
 
-  return <CellStyle active={active} onClick={clickHandler} />;
+  return (
+    <CellStyle active={active} onClick={clickHandler} clickable={clickable} />
+  );
 };
 
 export default Cell;

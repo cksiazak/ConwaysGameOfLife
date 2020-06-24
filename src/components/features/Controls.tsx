@@ -15,6 +15,7 @@ const Controls = ({
   innerGrid,
   gameLogic,
   setGeneration,
+  setClickable,
 }: {
   grid: any[][];
   setGrid: React.Dispatch<React.SetStateAction<any[][]>>;
@@ -26,6 +27,7 @@ const Controls = ({
   };
   gameLogic: () => void;
   setGeneration: React.Dispatch<React.SetStateAction<number>>;
+  setClickable: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const seed = () => {
     const gridCopy = grid.map((array) => array.slice());
@@ -43,10 +45,12 @@ const Controls = ({
 
   const start = () => {
     gameLogic();
+    setClickable(false);
   };
 
   const stop = () => {
     global.clearTimeout(intervalId);
+    setClickable(true);
   };
 
   const emptyGrid = () => {
@@ -56,6 +60,8 @@ const Controls = ({
 
     setGrid(empty);
     setGeneration(0);
+    global.clearTimeout(intervalId);
+    setClickable(true);
   };
   return (
     <ButtonWrapper>

@@ -13,7 +13,7 @@ const AppStyle = styled.div`
 
 const App = () => {
   const [generation, setGeneration] = useState(0);
-  const [speed] = useState(500);
+  const [speed] = useState(250);
   const [innerGrid] = useState({
     rows: 25,
     cols: 25,
@@ -24,11 +24,14 @@ const App = () => {
       .map(() => Array(innerGrid.cols).fill(false))
   );
   const [intervalId, setIntervalId] = useState<number>();
+  const [clickable, setClickable] = useState(true);
 
   const toggleBox = (row: number, col: number) => {
-    const gridCopy = grid.map((array) => array.slice());
-    gridCopy[row][col] = !gridCopy[row][col];
-    setGrid(gridCopy);
+    if (clickable) {
+      const gridCopy = grid.map((array) => array.slice());
+      gridCopy[row][col] = !gridCopy[row][col];
+      setGrid(gridCopy);
+    }
   };
 
   const getNeighbors = (x: number, y: number) => {
@@ -56,12 +59,11 @@ const App = () => {
   };
 
   const gameLogic = () => {
-    const newGrid = [...grid];
+    const newGrid = grid;
 
     for (let i = 0; i < innerGrid.rows; i++) {
       for (let j = 0; j < innerGrid.cols; j++) {
         let neighbors = getNeighbors(i, j);
-        console.log(neighbors);
 
         if (grid[i][j] && (neighbors < 2 || neighbors > 3)) {
           newGrid[i][j] = false;
@@ -87,7 +89,7 @@ const App = () => {
   return (
     <AppStyle className='App'>
       <h1>Conway's Game of Life</h1>
-      <Grid grid={grid} toggleBox={toggleBox} />
+      <Grid grid={grid} toggleBox={toggleBox} clickable={clickable} />
       <h3>Generation: {generation}</h3>
       <Controls
         grid={grid}
@@ -97,6 +99,7 @@ const App = () => {
         innerGrid={innerGrid}
         gameLogic={gameLogic}
         setGeneration={setGeneration}
+        setClickable={setClickable}
       />
     </AppStyle>
   );
