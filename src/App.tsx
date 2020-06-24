@@ -4,6 +4,7 @@ import styled from 'styled-components';
 // components
 import Grid from './components/features/Grid';
 import Controls from './components/features/Controls';
+import { getNeighbors } from './utils/getNeighbor';
 
 const AppStyle = styled.div`
   display: flex;
@@ -34,36 +35,12 @@ const App = () => {
     }
   };
 
-  const getNeighbors = (x: number, y: number) => {
-    let count = 0;
-
-    // top neighbor
-    if (x > 0) if (grid[x - 1][y]) count++;
-    // top-left neighbor
-    if (x > 0 && y > 0) if (grid[x - 1][y - 1]) count++;
-    // top right neighbor
-    if (x > 0 && y < innerGrid.cols - 1) if (grid[x - 1][y + 1]) count++;
-    // right neighbor
-    if (y < innerGrid.cols - 1) if (grid[x][y + 1]) count++;
-    // left neighbor
-    if (y > 0) if (grid[x][y - 1]) count++;
-    // bottom neighbor
-    if (x < innerGrid.rows - 1) if (grid[x + 1][y]) count++;
-    // bottom left neighbor
-    if (x < innerGrid.rows - 1 && y > 0) if (grid[x + 1][y - 1]) count++;
-    // bottom right neighbor
-    if (x < innerGrid.rows - 1 && y < innerGrid.cols - 1)
-      if (grid[x + 1][y + 1]) count++;
-
-    return count;
-  };
-
   const gameLogic = () => {
-    const newGrid = grid;
+    const newGrid = grid.map((array) => array.slice());
 
     for (let i = 0; i < innerGrid.rows; i++) {
       for (let j = 0; j < innerGrid.cols; j++) {
-        let neighbors = getNeighbors(i, j);
+        let neighbors = getNeighbors(i, j, grid, innerGrid);
 
         if (grid[i][j] && (neighbors < 2 || neighbors > 3)) {
           newGrid[i][j] = false;
