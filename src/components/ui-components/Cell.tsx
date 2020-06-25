@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
-const CellStyle = styled.div<{ active: boolean; clickable: boolean }>`
+const CellStyle = styled.svg<{
+  active: boolean;
+  clickable: boolean;
+}>`
   display: inline-block;
   border: 1px solid black;
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   margin-left: -1px;
   margin-bottom: -1px;
   background: ${({ active }) => (active ? 'black' : 'white')};
@@ -22,19 +25,23 @@ const Cell = ({
   row,
   col,
   clickable,
+  children,
 }: {
   active: boolean;
   toggleBox: (row: number, col: number) => void;
   row: number;
   col: number;
   clickable: boolean;
+  children?: ReactNode | string;
 }) => {
   const clickHandler = () => {
     toggleBox(row, col);
   };
 
   return (
-    <CellStyle active={active} onClick={clickHandler} clickable={clickable} />
+    <CellStyle active={active} onClick={clickHandler} clickable={clickable}>
+      {children}
+    </CellStyle>
   );
 };
 

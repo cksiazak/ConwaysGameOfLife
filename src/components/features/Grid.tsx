@@ -29,7 +29,9 @@ const Grid = ({
               row={rowKey}
               col={colKey}
               clickable={clickable}
-            />
+            >
+              {/* {colKey} */}
+            </Cell>
           ))}
         </Row>
       ))}

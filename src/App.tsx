@@ -14,7 +14,7 @@ const AppStyle = styled.div`
 
 const App = () => {
   const [generation, setGeneration] = useState(0);
-  const [speed] = useState(250);
+  const [speed, setSpeed] = useState(250);
   const [innerGrid] = useState({
     rows: 25,
     cols: 25,
@@ -29,30 +29,27 @@ const App = () => {
 
   const toggleBox = (row: number, col: number) => {
     if (clickable) {
-      const gridCopy = grid.map((array) => array.slice());
+      const gridCopy = [...grid];
       gridCopy[row][col] = !gridCopy[row][col];
       setGrid(gridCopy);
     }
   };
 
   const gameLogic = () => {
-    const newGrid = grid.map((array) => array.slice());
+    const newGrid = [...grid];
 
-    for (let i = 0; i < innerGrid.rows; i++) {
-      for (let j = 0; j < innerGrid.cols; j++) {
-        let neighbors = getNeighbors(i, j, grid, innerGrid);
+    grid.forEach((row, rowI) => {
+      row.forEach((_, colI) => {
+        let neighbors = getNeighbors(rowI, colI, grid, innerGrid);
 
-        if (grid[i][j] && (neighbors < 2 || neighbors > 3)) {
-          newGrid[i][j] = false;
+        if (grid[rowI][colI] && (neighbors < 2 || neighbors > 3)) {
+          newGrid[rowI][colI] = false;
         }
-        if (grid[i][j] && neighbors === 2) {
-          newGrid[i][j] = true;
+        if (!grid[rowI][colI] && neighbors === 3) {
+          newGrid[rowI][colI] = true;
         }
-        if (!grid[i][j] && neighbors === 3) {
-          newGrid[i][j] = true;
-        }
-      }
-    }
+      });
+    });
 
     setGrid(newGrid);
     setGeneration((prevState) => prevState + 1);
@@ -77,6 +74,9 @@ const App = () => {
         gameLogic={gameLogic}
         setGeneration={setGeneration}
         setClickable={setClickable}
+        setSpeed={setSpeed}
+        speed={speed}
+        clickable={clickable}
       />
     </AppStyle>
   );
